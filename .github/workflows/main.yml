@@ -9,10 +9,10 @@ jobs:
       options: -u root
     steps:
       - name: Fetch current branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Compiling and running ctbench tests on Archlinux
         uses: ./.github/actions/run-tests-archlinux
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v6
         with:
           name: archlinux-build-result
           path: example/build/
@@ -24,10 +24,10 @@ jobs:
       options: -u root
     steps:
       - name: Fetch current branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Compiling and running ctbench tests on Ubuntu
         uses: ./.github/actions/run-tests-ubuntu
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v6
         with:
           name: ubuntu-build-result
           path: example/build/
