@@ -3,7 +3,7 @@ on: [push]
 
 jobs:
   archlinux-testing:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     container:
       image: archlinux/archlinux
       options: -u root
@@ -18,9 +18,9 @@ jobs:
           path: example/build/
 
   ubuntu-testing:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     container:
-      image: ubuntu:23.04
+      image: ubuntu:24.04
       options: -u root
     steps:
       - name: Fetch current branch
