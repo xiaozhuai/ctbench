@@ -17,4 +17,4 @@ target_compile_options(
 
 target_link_options(ctbench-compile-opts INTERFACE -flto)
 
-target_compile_features(ctbench-compile-opts INTERFACE cxx_std_20)
+target_compile_features(ctbench-compile-opts INTERFACE cxx_std_23)
