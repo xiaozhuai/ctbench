@@ -18,14 +18,50 @@
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
+#include <iostream>
+#include <print>
+#include <ranges>
 #include <string>
 #include <string_view>
 
-#include <boost/process.hpp>
+#include <sys/wait.h>
 
 #include <nlohmann/json.hpp>
 
 #include <fmt/core.h>
+
+/// Starts a process and returns its PID.
+int start_process(std::vector<std::string> const &command_args) {
+  // Preparing execve argument vector
+  std::vector<const char *> execve_args =
+      std::views::transform(
+          command_args, [](std::string const &arg) { return arg.c_str(); }) |
+      std::ranges::to<std::vector<const char *>>();
+
+  execve_args.push_back(nullptr); // execve requirement
+
+  // Avoid stdout duplicates
+  std::flush(std::cout);
+
+  int pid = fork();
+
+  if (pid == 0) { // Child process
+    int error = execvp(execve_args[0], const_cast<char **>(execve_args.data()));
+
+    // Will not run unless execvp has an error
+    std::println("execvp failed with error number {}.", error);
+    std::exit(error);
+  }
+
+  return pid;
+}
+
+/// Runs a process and returns its exit code.
+int run_process(std::vector<std::string> const &args) {
+  int status;
+  waitpid(start_process(args), &status, 0);
+  return status;
+}
 
 /// Concatenates an argument list into a command string
 /// in which the arguments are separated by whitespaces.
@@ -55,7 +91,7 @@ inline int get_timetrace_file(std::filesystem::path const time_trace_file_dest,
   using exec_clock_t = ch::steady_clock;
 
   exec_clock_t::time_point const exec_t0 = exec_clock_t::now();
-  int const exit_code = boost::process::system(command_args);
+  int const exit_code = run_process(command_args);
   exec_clock_t::time_point const exec_t1 = exec_clock_t::now();
 
   // Check child exit code
@@ -116,10 +152,11 @@ int main(int argc, char const *argv[]) {
   constexpr std::string_view override_flag_prefix = "--override-compiler=";
 
   // Help display
-  if (argc < 3 ||
-      std::any_of(argv, argv + argc, [](std::string_view arg) -> bool {
-        return arg == "--help" || arg == "-h" || arg == "-help";
-      })) {
+  if (argc < 3 || std::any_of(
+                      argv, argv + argc,
+                      [](std::string_view arg) -> bool {
+                        return arg == "--help" || arg == "-h" || arg == "-help";
+                      })) {
     fmt::print("Usage: {} time_trace_export_path.json COMPILER [ARGS]...\n\n"
                "{} <COMPILER> - Override previously set compiler\n\n"
                "If CTBENCH_TTW_VERBOSE is set, "
