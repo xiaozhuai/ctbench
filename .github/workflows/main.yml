@@ -3,31 +3,31 @@ on: [push]
 
 jobs:
   archlinux-testing:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     container:
       image: archlinux/archlinux
       options: -u root
     steps:
       - name: Fetch current branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Compiling and running ctbench tests on Archlinux
         uses: ./.github/actions/run-tests-archlinux
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v6
         with:
           name: archlinux-build-result
           path: example/build/
 
   ubuntu-testing:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     container:
-      image: ubuntu:23.04
+      image: ubuntu:24.04
       options: -u root
     steps:
       - name: Fetch current branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Compiling and running ctbench tests on Ubuntu
         uses: ./.github/actions/run-tests-ubuntu
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v6
         with:
           name: ubuntu-build-result
           path: example/build/

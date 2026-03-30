@@ -20,13 +20,39 @@ RUN pacman -S --noconfirm \
   ninja \
   nlohmann-json \
   onetbb \
+  openssh \
   tar \
   unzip \
   zip
 
 WORKDIR /tmp
 
+#
+# AUR packages installation
+#
+
+RUN useradd -u 24 -m builder
+RUN usermod -aG wheel builder
+RUN echo '%wheel ALL=(ALL:ALL) NOPASSWD: ALL' >> /etc/sudoers
+
+USER builder
+
+RUN mkdir -p -m 0700 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+RUN git clone https://github.com/archlinux/aur.git -b paru --depth 1 /tmp/paru
+WORKDIR /tmp/paru
+RUN --mount=type=cache,sharing=locked,target=/var/cache/pacman \
+  ulimit -n 128 && makepkg -si --noconfirm
+
+USER builder
+
+RUN --mount=type=cache,sharing=locked,target=/var/cache/pacman \
+  ulimit -n 128 && paru -S --noconfirm \
+  sciplot-git
+
 # Run tests
+
+USER root
 
 WORKDIR /
 COPY entrypoint.sh /entrypoint.sh

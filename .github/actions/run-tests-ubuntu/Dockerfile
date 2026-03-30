@@ -1,4 +1,4 @@
-FROM ubuntu:23.04
+FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -22,6 +22,7 @@ RUN apt install -y \
   libllvm15 \
   libtbb-dev \
   libtbb12 \
+  libzstd-dev \
   llvm \
   llvm-dev \
   ninja-build \
