@@ -19,7 +19,6 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <ranges>
 #include <string>
 #include <string_view>
 
@@ -32,10 +31,10 @@
 /// Starts a process and returns its PID.
 int start_process(std::vector<std::string> const &command_args) {
   // Preparing execve argument vector
-  std::vector<const char *> execve_args =
-      std::views::transform(
-          command_args, [](std::string const &arg) { return arg.c_str(); }) |
-      std::ranges::to<std::vector<const char *>>();
+  std::vector<const char *> execve_args;
+
+  std::ranges::transform(command_args, std::back_inserter(execve_args),
+                         [](std::string const &arg) { return arg.c_str(); });
 
   execve_args.push_back(nullptr); // execve requirement
 
