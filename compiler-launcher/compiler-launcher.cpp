@@ -19,7 +19,6 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <print>
 #include <ranges>
 #include <string>
 #include <string_view>
@@ -49,7 +48,7 @@ int start_process(std::vector<std::string> const &command_args) {
     int error = execvp(execve_args[0], const_cast<char **>(execve_args.data()));
 
     // Will not run unless execvp has an error
-    std::println("execvp failed with error number {}.", error);
+    fmt::println("execvp failed with error number {}.", error);
     std::exit(error);
   }
 
