@@ -22,6 +22,7 @@ RUN apt install -y \
   libllvm15 \
   libtbb-dev \
   libtbb12 \
+  libzstd \
   llvm \
   llvm-dev \
   ninja-build \

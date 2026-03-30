@@ -8,7 +8,6 @@ find_package(Boost CONFIG)
 find_package(sciplot REQUIRED)
 find_package(LLVM REQUIRED CONFIG)
 find_package(fmt REQUIRED)
-find_package(zstd) # Fix for bad LLVM packaging on Ubuntu
 
 if(${CTBENCH_ENABLE_TESTS})
   find_package(Catch2 REQUIRED)
