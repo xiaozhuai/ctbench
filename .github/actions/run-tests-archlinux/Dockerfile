@@ -39,7 +39,7 @@ USER builder
 
 RUN mkdir -p -m 0700 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
 
-RUN git clone https://github.com/archlinux/aur.git -b paru-git --depth 1 /tmp/paru
+RUN git clone https://github.com/archlinux/aur.git -b paru --depth 1 /tmp/paru
 WORKDIR /tmp/paru
 RUN --mount=type=cache,sharing=locked,target=/var/cache/pacman \
   ulimit -n 128 && makepkg -si --noconfirm
